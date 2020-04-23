@@ -47,10 +47,7 @@ CREATE TABLE `story_table` (
 --
 
 INSERT INTO `story_table` (`storyId`, `content`, `picture`, `userId`, `category`, `likes`) VALUES
-(1, 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1),
-(2, 'Life is like riding a bicycle. To keep your balance you must keep moving.','', 1, 'Motivational', 20),
-(3, 'You cannot hope to build a better world without improving the individuals. To that end, each of us must work for his own improvement and, at the same time, share a general responsibility for all human','', 3, 'Life', 100),
-(4, 'Your success and happiness lies in you. Resolve to keep happy, and your joy and you shall form an invincible host against difficulties.','', 1, 'Inspirational', 86);
+(1, 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1);
 
 
 --
@@ -61,14 +58,14 @@ DROP TABLE IF EXISTS `stream_table`;
 CREATE TABLE `stream_table` (
   `streamId` mediumint(9) NOT NULL,
   `userId` smallint(6) NULL,
-  `storyId` smallint(6) NULL,
+  `storyId` smallint(6) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `story_table`
+-- Dumping data for table `stream_table`
 --
 
-INSERT INTO `story_table` (`streamId`, `storyId`, `userId`, ) VALUES
+INSERT INTO `stream_table` (`streamId`, `storyId`, `userId`) VALUES
 (1,1,1);
 
 
