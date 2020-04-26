@@ -1,0 +1,63 @@
+<%- include('templates/header'); -%>
+
+
+<div class="container">
+    <div class ="jumbotron">
+        <h1 style="text-align:center;"> Quotes by Keyword </h1>
+    </div>
+
+    <form action='/update/<%=user.userId%>?_method=PUT' method="POST" >
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="userId" class="col-sm-4 col-form-label">User Id:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="userId" name="userId" value='<%=user.userId%>'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="Firstname" class="col-sm-4 col-form-label">First name:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="Firstname" name="Firstname" value='<%=user.firstName%>'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="Lastname" class="col-sm-4 col-form-label">Last name:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="Lastname" name="Lastname" value='<%=user.lastName%>'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="sex" class="col-sm-4 col-form-label">Sex:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="sex" name="sex" value='<%=user.sex%>'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="profilePic" class="col-sm-4 col-form-label">Picture:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="profilePic" name="profilePic" value='<%=user.profilePic%>'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="description" class="col-sm-4 col-form-label">Description</label>
+            <div class="col-sm-4">
+                <textarea type="text" class="form-control" id="description" name="description" rows="3" value='<%=user.description%>'></textarea>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <div class="col-sm-4"> </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary btn-block"> Update </button> 
+            </div>
+        </div>
+        <div class="col-sm-4"></div>            
+    </form>
+</div>
+
+<%- include('templates/footer'); -%>

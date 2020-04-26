@@ -1,0 +1,36 @@
+<%- include('templates/header'); -%>
+
+
+<div class="container">
+    <div class ="jumbotron">
+        <h1> Home </h1>
+        <br>
+			<div class='form-group row'>
+				<div class='col-sm-4'>
+					<%if(!users){%>
+					
+					<%} else {%>
+						
+						<table>
+							<tr><th>User</th><th>Action</th></tr>
+							<tr><td colspan="2"><hr/></td></td></tr>
+							<%users.forEach(function(user){%>
+								<tr>
+									<td><%=user.firstName%> <%=user.lastName%></td>
+									<td><a href="/user/<%=user.userId%>">Info</a> | <a href="/user/<%=user.userId%>/edit">Edit</a> | <a href="/user/<%=user.userId%>/delete">Delete</a></td>
+								</tr>
+							<%});%>
+						</table>
+					<%}%>
+
+				</div>
+			</div>
+
+		<div class="col-sm-4"> </div>
+        	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
+        <div class="col-sm-4"></div> 
+    </div>
+</div>
+
+
+<%- include('templates/footer'); -%>
