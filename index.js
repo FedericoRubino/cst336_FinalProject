@@ -29,14 +29,24 @@ app.use(methodOverride('_method'))
 
 /* home: This should contain all of the posts*/
 app.get("/", function(req, res){
-    var statement = "select * from user_table";
+    var statement = "select * from user_table;";
+    var statementStory = "select * from story_table;";
+    var users = null
     connection.query(statement, function(error,found){
-        var users = null
         if(error) throw error;
         if(found.length){
+        	console.log(found);
     		users = found;
         }
-	    res.render('home', { users:users});
+    });
+	var stories = null;
+    connection.query(statementStory, function(error,found){
+        if(error) throw error;
+        if(found.length){
+        	console.log(found);
+    		stories = found;
+        }
+	    res.render('home', { users:users, stories:stories});
     });
 });
 
@@ -51,7 +61,7 @@ app.get("/user/:userId", function(req, res){
 		if(found.length){
 			user = found[0]; // this gets us all of the data from the database of the given author
 		}
-		// console.log(user);
+		console.log(user);
 		res.render('profile_page', {user:user});
     });
 });
@@ -72,7 +82,41 @@ app.get("/user/:userId/edit", function(req, res){
     });
 });
 
-/* delete a user - needs some protection*/
+/* sends us to the create new user page */
+app.get("/new_user",function(req, res) {
+   res.render('new_user'); 
+});
+
+app.post("/user/new", function(req, res) {
+    console.log(req.body);
+    connection.query('SELECT COUNT(*) FROM user_table;', function(error, found){
+	    if(error) throw error;
+	    if(found.length){
+			// console.log(found);
+			var userId = found[0]['COUNT(*)'] + 1;
+			var statement = "insert into user_table " +
+							"(userId, username, password, firstName, lastName, sex, profilePic, description, loggedIn) " +
+							"Values (" +
+							userId + ",'" +
+							req.body.username + "','" +
+							req.body.password + "','" +
+							req.body.Firstname + "','" +
+							req.body.Lastname + "','" +
+							req.body.sex + "','" +
+							req.body.profilePic + "','" +
+							req.body.description + "'," +
+							0 + ");";
+			console.log(statement);
+			connection.query(statement, function(error, found) {
+			    if (error) throw error;
+			    res.redirect('/');
+			});
+	    }
+	});
+});
+
+
+/* delete a user - needs some protection */
 app.get("/user/:userId/delete", function(req, res) {
     var statement = "DELETE FROM user_table where userId=" + req.params.userId + ";";
     connection.query(statement, function(error, found) {
@@ -134,9 +178,10 @@ app.post("/post/new", function(req, res){
 			// console.log(found);
 			var storyId = found[0]['COUNT(*)'] + 1;
 			var statement = "insert into story_table " +
-							"(storyId, content, picture, userId, category, likes) " +
+							"(storyId, title, content, picture, userId, category, likes) " +
 							"Values (" +
 							storyId + ",'" +
+							req.body.title + "','" +
 							req.body.content + "','" +
 							req.body.picture + "','" +
 							req.body.userId + "','" +

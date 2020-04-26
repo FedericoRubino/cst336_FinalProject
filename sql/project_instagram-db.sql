@@ -9,21 +9,22 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `user_table`;
 CREATE TABLE `user_table` (
   `userId` mediumint(9) NOT NULL,
+  `username` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `firstName` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `lastName` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `sex` char(1) COLLATE utf8_unicode_ci NOT NULL,
   `profilePic` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `description` varchar(500) COLLATE utf8_unicode_ci NOT NULL
+  `description` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
+  `loggedIn` smallint(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `user_table`
 --
 
-INSERT INTO `user_table` (`userId`, `firstName`, `lastName`, `sex`, `profilePic`, `description`) VALUES
-(1, 'Benjamin1', 'Franklin', 'M', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 'Benjamin Franklin was America’s scientist, inventor, politician, philanthropist and business man. He is best known as one of our Founding Fathers and the only one who signed all three documents that freed America from Britain: The Declaration of Independence. The American Constitution and The Treaty of Paris.'),
-(2, 'Benjamin2', 'Franklin', 'M', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 'Benjamin Franklin was America’s scientist, inventor, politician, philanthropist and business man. He is best known as one of our Founding Fathers and the only one who signed all three documents that freed America from Britain: The Declaration of Independence. The American Constitution and The Treaty of Paris.'),
-(3, 'Benjamin3', 'Franklin', 'M', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 'Benjamin Franklin was America’s scientist, inventor, politician, philanthropist and business man. He is best known as one of our Founding Fathers and the only one who signed all three documents that freed America from Britain: The Declaration of Independence. The American Constitution and The Treaty of Paris.');
+INSERT INTO `user_table` (`userId`,`username`, `password`, `firstName`, `lastName`, `sex`, `profilePic`, `description`,`loggedIn`) VALUES
+(1,'benji','password', 'Benjamin1', 'Franklin', 'M', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 'Benjamin Franklin was America’s scientist, inventor, politician, philanthropist and business man. He is best known as one of our Founding Fathers and the only one who signed all three documents that freed America from Britain: The Declaration of Independence. The American Constitution and The Treaty of Paris.',0);
 
 -- --------------------------------------------------------
 
@@ -35,6 +36,7 @@ DROP TABLE IF EXISTS `story_table`;
 
 CREATE TABLE `story_table` (
   `storyId` mediumint(9) NOT NULL,
+  `title` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `content` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `picture` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `userId` smallint(6) NULL,
@@ -46,8 +48,8 @@ CREATE TABLE `story_table` (
 -- Dumping data for table `story_table`
 --
 
-INSERT INTO `story_table` (`storyId`, `content`, `picture`, `userId`, `category`, `likes`) VALUES
-(1, 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1);
+INSERT INTO `story_table` (`storyId`,`title`, `content`, `picture`, `userId`, `category`, `likes`) VALUES
+(1,'Best Quote', 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1);
 
 
 --

@@ -1,5 +1,15 @@
 <%- include('templates/header'); -%>
 
+<script>
+
+	function confirmF(id){
+		if(confirm("Do you really want to delete this user?")){
+			location.href = "/user/"+id+"/delete";
+		}
+	}
+	
+</script>
+
 
 <div class="container">
     <div class ="jumbotron">
@@ -17,7 +27,7 @@
 							<%users.forEach(function(user){%>
 								<tr>
 									<td><%=user.firstName%> <%=user.lastName%></td>
-									<td><a href="/user/<%=user.userId%>">Info</a> | <a href="/user/<%=user.userId%>/edit">Edit</a> | <a href="/user/<%=user.userId%>/delete">Delete</a></td>
+									<td><a href="/user/<%=user.userId%>">Info</a> | <a href="/user/<%=user.userId%>/edit">Edit</a> | <button onclick="confirmF(<%=user.userId%>)">Delete</button> </td>
 								</tr>
 							<%});%>
 						</table>
@@ -28,8 +38,31 @@
 
 		<div class="col-sm-4"> </div>
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
+        	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_user';" > New User </button> 
         <div class="col-sm-4"></div> 
     </div>
+    
+    <div class='form-group row'>
+		<div class='col-sm-4'>
+			<%if(!stories){%>
+			
+			<%} else {%>
+			
+				<%stories.forEach(function(story){%>
+				    <div class ="jumbotron">
+						<h3> <%=story.title%></h3>
+						<img class='col-sm-4 portrait' src= <%=story.picture%> />
+						<h2>Content: </h2><div><%=story.content%></div>
+						<h5>Likes: </h5> <div><%=story.likes%></div>
+					</div>
+				<%});%>
+			<%}%>
+
+		</div>
+	</div>
+    
+    
+    
 </div>
 
 

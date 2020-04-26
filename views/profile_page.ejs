@@ -16,7 +16,9 @@
             <h1 class='col-sm-12 nofound'>CANNOT FIND YOUR Profile!!!</h1>
         <%}else{%>
             
-            <img class='col-sm-4 portrait' src= <%=user.profilePic%> />
+            <img class='col-sm-4 portrait' src= "<%=user.profilePic%>" alt="<%=user.profilePic%>"/>
+            <!--<img class='col-sm-4 portrait' src="img/csumblogo.png" alt ='picture!!' />-->
+
             <div class='col-sm-4 info'>
                 <h3><%=user.firstName%> <%=user.lastName%></h3>
                 <div>Sex: <%=user.sex%></div>
