@@ -21,6 +21,9 @@
 					
 					<%} else {%>
 						
+						<h3>Logged in user: <%=currentUser%></h3>
+						<br>
+						
 						<table>
 							<tr><th>User</th><th>Action</th></tr>
 							<tr><td colspan="2"><hr/></td></td></tr>
@@ -39,6 +42,7 @@
 		<div class="col-sm-4"> </div>
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_user';" > New User </button> 
+        	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/login_user';" > Login </button> 
         <div class="col-sm-4"></div> 
     </div>
     

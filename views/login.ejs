@@ -1,0 +1,40 @@
+<%- include('templates/header'); -%>
+
+
+<div class="container">
+    <div class ="jumbotron">
+        <h1 style="text-align:center;"> Login </h1>
+    </div>
+
+
+    <%if(typeof error != 'undefined' && error){%>
+        <h6 style = "color='red';"> Incorrect Login Credentials</h6>
+    <%}%>
+
+    <form action='/user/login' method="POST" >
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="username" class="col-sm-4 col-form-label">Username:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="username" name="username" placeholder='Username'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label style="text-align:right;" for="password" class="col-sm-4 col-form-label">Password:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="password" name="password" placeholder='Password'>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <div class="col-sm-4"> </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary btn-block"> Register </button> 
+            </div>
+        </div>
+        <div class="col-sm-4"></div>            
+    </form>
+</div>
+
+<%- include('templates/footer'); -%>
