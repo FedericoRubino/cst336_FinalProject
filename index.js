@@ -24,6 +24,9 @@ connection.connect();
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+// override with POST having ?_method=DELETE
+app.use(methodOverride('_method'))
+
 app.use(express.static("css"));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(session({
@@ -33,8 +36,33 @@ app.use(session({
 	
 }));
 
-// override with POST having ?_method=DELETE
-app.use(methodOverride('_method'))
+
+/* Middleware functions */
+function checkUsername(username){
+	let stmt = "SELECT * FROM user_table WHERE username=?";
+	return new Promise(function(resolve, reject){
+		connection.query(stmt, [username], function(error, result) {
+		    if(error) throw error;
+		    resolve(result);
+		});
+	});
+}
+
+function checkPassword(password, hash){
+	return new Promise(function(resolve, reject){
+		bcrypt.compare(password, hash, function(error, result){
+			if(error) throw error;
+			resolve(result);
+		});
+	});
+}
+
+function isAuthenticated(req, res, next){
+	if(!req.session.authenticated) res.redirect('/login_user');
+	else next();
+}
+/* Middleware functions */
+
 
 /* home: This should contain all of the posts*/
 app.get("/", function(req, res){
@@ -61,7 +89,7 @@ app.get("/", function(req, res){
 
 
 /* display user page  */
-app.get("/user/:userId", function(req, res){
+app.get("/user/:userId", isAuthenticated, function(req, res){
 	var userId = req.params.userId;
     var statement = "select * from user_table "+
     				"where userId=" + userId + ";" ; 
@@ -77,7 +105,7 @@ app.get("/user/:userId", function(req, res){
 });
 
 /* sends us to the edit page for user */
-app.get("/user/:userId/edit", function(req, res){
+app.get("/user/:userId/edit", isAuthenticated, function(req, res){
 	var userId = req.params.userId;
     var statement = "select * from user_table "+
     				"where userId=" + userId + ";" ; 
@@ -97,25 +125,6 @@ app.get("/login_user",function(req, res) {
    res.render('login'); 
 });
 
-
-function checkUsername(username){
-	let stmt = "SELECT * FROM user_table WHERE username=?";
-	return new Promise(function(resolve, reject){
-		connection.query(stmt, [username], function(error, result) {
-		    if(error) throw error;
-		    resolve(result);
-		});
-	});
-}
-
-function checkPassword(password, hash){
-	return new Promise(function(resolve, reject){
-		bcrypt.compare(password, hash, function(error, result){
-			if(error) throw error;
-			resolve(result);
-		});
-	});
-}
 
 /* login a user */
 app.post("/user/login", async function(req, res){
@@ -160,7 +169,7 @@ app.post("/user/register", function(req, res) {
 
 
 /* logout rout */
-app.get('/logout',function(req, res) {
+app.get('/logout', isAuthenticated, function(req, res) {
     req.session.destroy();
     res.redirect('/');
 });
@@ -168,7 +177,7 @@ app.get('/logout',function(req, res) {
 
 
 /* delete a user - needs some protection */
-app.get("/user/:userId/delete", function(req, res) {
+app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
     var statement = "DELETE FROM user_table where userId=" + req.params.userId + ";";
     connection.query(statement, function(error, found) {
         if(error) throw error;
@@ -177,7 +186,7 @@ app.get("/user/:userId/delete", function(req, res) {
 });
 
 /* updates the user information */
-app.put("/update/:usrID", function(req, res) {
+app.put("/update/:usrID", isAuthenticated, function(req, res) {
     console.log(req.body);
     
     var statement = "UPDATE user_table SET " +
@@ -195,7 +204,7 @@ app.put("/update/:usrID", function(req, res) {
 })
 
 /* the user profile page */
-app.get("/user_profile", function(req, res){
+app.get("/user_profile", isAuthenticated, function(req, res){
     var name = req.query.name;
     var fname = name.split(" ").splice(0,1);
     var lname = name.split(" ").splice(1,2);
@@ -215,14 +224,24 @@ app.get("/user_profile", function(req, res){
 
 
 /* route to making a new post */
-app.get("/new_post", function(req, res){
+app.get("/new_post", isAuthenticated, function(req, res){
 	res.render('new_post');
 });
 
 
 /* create a new post - add post into database */
-app.post("/post/new", function(req, res){
-	console.log(req.body);
+app.post("/post/new",isAuthenticated, function(req, res){
+	console.log(req.session.user);
+	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
+	
+	var userId = null;
+	connection.query(stmt,function(error, found) {
+	    if(error) throw error;
+	    if(found.length){
+	    	userId = found[0].userId;
+	    }
+	});
+	
 	connection.query('SELECT COUNT(*) FROM story_table;', function(error, found){
 	    if(error) throw error;
 	    if(found.length){
@@ -235,7 +254,7 @@ app.post("/post/new", function(req, res){
 							req.body.title + "','" +
 							req.body.content + "','" +
 							req.body.picture + "','" +
-							req.body.userId + "','" +
+							userId + "','" +
 							req.body.category + "','" +
 							0 + "');";
 			console.log(statement);
@@ -248,12 +267,12 @@ app.post("/post/new", function(req, res){
 });
 
 /* update an existing post */
-app.put("post/:pstId/update", function(res,req){
+app.put("post/:pstId/update", isAuthenticated, function(res,req){
 		
 });
 
 /* delete a post - needs some protection */
-app.get("post/:pstId/delete", function(req, res) {
+app.get("post/:pstId/delete", isAuthenticated, function(req, res) {
     
 });
 
