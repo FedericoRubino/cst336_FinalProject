@@ -3,6 +3,9 @@ Author: Federico Rubino, Daniel Wadell, Sean Towne
 Final Project
 */
 
+var fs = require('fs');
+var path = require('path');
+var multer = require('multer');
 var express = require("express");
 var mysql = require("mysql");
 var app = express();
@@ -11,6 +14,16 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
 var session = require('express-session');
 
+
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+
+// override with POST having ?_method=DELETE
+app.use(methodOverride('_method'));
+
+app.use(express.static("css"));
+app.use(bodyParser.urlencoded({extended:true}));
+
 /* Configure mysql dbms */
 const connection = mysql.createConnection({
 	host: "localhost",
@@ -18,23 +31,25 @@ const connection = mysql.createConnection({
 	password: "ToRuWa",
 	database: "project_database"
 });
-
 connection.connect();
 
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
-
-// override with POST having ?_method=DELETE
-app.use(methodOverride('_method'))
-
-app.use(express.static("css"));
-app.use(bodyParser.urlencoded({extended:true}));
 app.use(session({
 	secret: "wabbadubbadubdub!!",
 	resave: true,
 	saveUninitialized: true
 	
 }));
+
+/* Middleware for file uploading*/
+let storage = multer.diskStorage({
+	destination: function(req, file, callback){
+		callback(null, path.join(__dirname, "public/file/"));
+	},
+	filename: function(req, file, callback){
+		callback(null, file.fieldname + "-" + Date.now());
+	}
+});
+let upload = multer({storage:storage});
 
 
 /* Middleware functions */
@@ -230,8 +245,14 @@ app.get("/new_post", isAuthenticated, function(req, res){
 
 
 /* create a new post - add post into database */
-app.post("/post/new",isAuthenticated, function(req, res){
-	console.log(req.session.user);
+app.post("/post/new", upload.single('picture'), function(req, res){
+	console.log("file uploaded locally at: ", req.file.path);
+	var filename = req.file.path.split("/").pop();
+	var content = fs.readFileSync(req.file.path);
+	var data = new Buffer(content);
+	var statement = "insert into story_table (storyId, title, content, picture, userId, category, likes) Values(?,?,?,?,?,?,?);";
+	
+	// console.log(req.session.user);
 	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
 	
 	var userId = null;
@@ -247,18 +268,8 @@ app.post("/post/new",isAuthenticated, function(req, res){
 	    if(found.length){
 			// console.log(found);
 			var storyId = found[0]['COUNT(*)'] + 1;
-			var statement = "insert into story_table " +
-							"(storyId, title, content, picture, userId, category, likes) " +
-							"Values (" +
-							storyId + ",'" +
-							req.body.title + "','" +
-							req.body.content + "','" +
-							req.body.picture + "','" +
-							userId + "','" +
-							req.body.category + "','" +
-							0 + "');";
-			console.log(statement);
-			connection.query(statement, function(error, found) {
+			console.log(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0]);
+			connection.query(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
 			    if (error) throw error;
 			    res.redirect('/');
 			});

@@ -11,7 +11,7 @@
     <h3>Add new Post</h3>
     
 
-    <form action='/post/new' method="post" >
+    <form action='/post/new' method="post" enctype="multipart/form-data" >
         <div class="form-group row">
             <label  for="title" class="col-sm-4 col-form-label">Title</label>
             <div class="col-sm-4">
@@ -27,18 +27,12 @@
         </div>
         
         <div class="form-group row">
-            <label  for="picture" class="col-sm-4 col-form-label">Picture</label>
+            <label  for="picture" class="col-sm-4 col-form-label">Select File</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="picture" name="picture" placeholder='a picture' required>
+                <input type="file" class="form-control" id="picture" name="picture" required>
             </div>
         </div>
-        
-        <!--<div class="form-group row">-->
-        <!--    <label  for="userId" class="col-sm-4 col-form-label">This will be removed</label>-->
-        <!--    <div class="col-sm-4">-->
-        <!--        <input type="text" class="form-control" id="userId" name="userId" placeholder='userId' required>-->
-        <!--    </div>-->
-        <!--</div>-->
+     
         
         <div class="form-group row">
             <label  for="category" class="col-sm-4 col-form-label">Category</label>
