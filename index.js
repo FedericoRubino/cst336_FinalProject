@@ -87,7 +87,7 @@ app.get("/", function(req, res){
     connection.query(statement, function(error,found){
         if(error) throw error;
         if(found.length){
-        	console.log(found);
+        	// console.log(found);
     		users = found;
         }
     });
@@ -97,6 +97,12 @@ app.get("/", function(req, res){
         if(found.length){
         	// console.log(found);
     		stories = found;
+    		console.log(stories);
+    		stories.forEach(function(story){
+	    		var data = new Buffer(story.picture, 'binary');
+				story.picture = data.toString('base64');
+				console.log(story.picture);
+    		});
         }
 	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });

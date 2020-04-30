@@ -55,7 +55,7 @@
 				<%stories.forEach(function(story){%>
 				    <div class ="jumbotron">
 						<h3> <%=story.title%></h3>
-						<img class='col-sm-4 portrait' src= <%=story.picture%> />
+						<img class='col-sm-4 portrait' src='data:image/png;base64, <%=story.picture%>'/>
 						<h2>Content: </h2><div><%=story.content%></div>
 						<h5>Likes: </h5> <div><%=story.likes%></div>
 					</div>

@@ -52,8 +52,8 @@ CREATE TABLE `story_table` (
 -- Dumping data for table `story_table`
 --
 
-INSERT INTO `story_table` (`storyId`,`title`, `content`, `picture`, `userId`, `category`, `likes`) VALUES
-(1,'Best Quote', 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1);
+-- INSERT INTO `story_table` (`storyId`,`title`, `content`, `picture`, `userId`, `category`, `likes`) VALUES
+-- (1,'Best Quote', 'Try not to become a man of success, but rather try to become a man of value.','https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/857287e7-d073-4c62-812e-aae249f67326/d4hjp6a-b1e2522e-2d43-42de-95d7-1ef21bb68d70.jpg/v1/fil', 1, 'Inspirational', 1);
 
 
 --
