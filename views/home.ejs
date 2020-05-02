@@ -43,6 +43,7 @@
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_user';" > New User </button> 
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/login_user';" > Login </button> 
+        	
         <div class="col-sm-4"></div> 
     </div>
     
@@ -58,6 +59,9 @@
 						<img class='col-sm-4 portrait' src='data:image/png;base64, <%=story.picture%>'/>
 						<h2>Content: </h2><div><%=story.content%></div>
 						<h5>Likes: </h5> <div><%=story.likes%></div>
+						
+							<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='post/<%=story.storyId%>/update';" > Edit post </button> 
+		
 					</div>
 				<%});%>
 			<%}%>
