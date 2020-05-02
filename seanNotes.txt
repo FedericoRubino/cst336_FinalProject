@@ -1,0 +1,85 @@
+user: ToRuWa
+
+
+GRANT ALL PRIVILEGES ON database_name.* TO 'database_user'@'localhost';
+
+GRANT ALL PRIVILEGES ON *.* TO 'ToRuWa'@'localhost';
+
+
+instructions for deploying to heroku:
+
+create project: 
+    I used name cst-336-final-project-toruwa
+    
+login to heroku and add this .git to the heroku app
+    heroku login
+    heroku git:remote -a cst-336-final-project-toruwa
+    
+add clearBD to heroku app:
+    resources -> 
+        find add-ons -> 
+            clearDBMysql -> 
+                click install clearDB -> 
+                    enter app name -> 
+                        click provision add-on
+                        
+get DB info:
+    click on clearDB from within the resources tab on your heroku app.
+    
+    DB name : heroku_7b4f59de6b2d0b9
+    
+    click on DB name ie. heroku_garblegarblegarble ( takes a while to load )
+    click on system info tab.
+    
+    Username:	b8eefb71bce5ff
+    Password:	4741fc7b (Reset)
+    
+get DB Host from heroku config variable:
+    go to setting in heroku app
+    reveal config variables
+    
+    CLEARDB_DATABASE_URL = mysql://b8eefb71bce5ff:4741fc7b@us-cdbr-east-06.cleardb.net/heroku_7b4f59de6b2d0b9?reconnect=true
+    
+    host is string between first '@' to the .net
+    
+    host = us-cdbr-east-06.cleardb.net
+    
+run our sql script with these credentials to populate our remote DB from cloud 9 terminal
+    cd /our/project/directory/
+    
+    
+    I used this to run the script:
+        mysql -u b8eefb71bce5ff -p -h 'us-cdbr-east-06.cleardb.net' -D heroku_7b4f59de6b2d0b9 -P 3306 < ./sql/project_instagram-db.sql
+
+    you can check your work by loging in and poking around..
+    
+    mysql -u b8eefb71bce5ff -p -h 'us-cdbr-east-06.cleardb.net'
+    #enter password
+    
+    use heroku_7b4f59de6b2d0b9;
+    show tables;
+    +----------------------------------+
+    | Tables_in_heroku_7b4f59de6b2d0b9 |
+    +----------------------------------+
+    | story_table                      |
+    | stream_table                     |
+    | user_table                       |
+    +----------------------------------+
+    3 rows in set (0.02 sec)
+        
+        
+        
+VERY IMPORTANT:
+    We have to untrack the node_modules folder from our project. Heroku won't run if we include it.
+    Heroku knows what packages to use by looking at package.json.
+    
+    we have to put it in the git ignore:
+        echo "node_modules/" > .gitignore
+    And then untrack it:
+        git rm -r --cached node_modules/
+        
+Ready to deploy to heroku:
+
+    git add .
+    git commit -m "please for the love of god, don't break"
+    git push heroku master

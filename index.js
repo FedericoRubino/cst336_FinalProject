@@ -24,7 +24,12 @@ app.use(methodOverride('_method'));
 app.use(express.static("css"));
 app.use(bodyParser.urlencoded({extended:true}));
 
-/* Configure mysql dbms */
+
+
+/* *********************** Configure mysql dbms  ***********************  */
+/* *********************************************************************  */
+
+/* Old way
 const connection = mysql.createConnection({
 	host: "localhost",
 	user: "ToRuWa",
@@ -32,6 +37,78 @@ const connection = mysql.createConnection({
 	database: "project_database"
 });
 connection.connect();
+*/
+
+/* New way */
+const environment = process.env.ENVIRONMENT;
+console.log(environment);
+
+var DBCredentials;
+
+// We only need one of these but we can use all three.
+if ( environment =='PRODUCTION_SEAN' ){
+	DBCredentials = {
+		host: 'us-cdbr-east-06.cleardb.net',
+		user: 'b8eefb71bce5ff',
+		password: '4741fc7b',
+		database: 'heroku_7b4f59de6b2d0b9',
+		port: 3306
+	};
+}
+else if ( environment == 'PRODUCTION_FEDERICO' ){
+	// Not necessary if you dont want to have your own heroku instance
+	DBCredentials = {
+		host: 'Federicos heroku clear db host info etc.',
+		user: '',
+		password: '',
+		database: '',
+		port: 3306
+	};
+}
+else if ( environment == 'PRODUCTION_DANIEL' ){
+	// Not necessary if you dont want to have your own heroku instance
+	DBCredentials = {
+		host: 'Daniels heroku clear db host info etc.',
+		user: '',
+		password: '',
+		database: '',
+		port: 3306
+	};
+}
+else{
+	DBCredentials = {
+		host: "localhost",
+		user: "ToRuWa",
+		password: "ToRuWa",
+		database: "project_database",
+		port: 3306
+	};
+}
+
+// I found this code on the internet
+var connection;
+function handleDisconnect() {
+    connection = mysql.createConnection(DBCredentials);  	// Recreate the connection, since the old one cannot be reused.
+    connection.connect( function onConnect(err) {   		// The server is either down
+        if (err) {                                  		// or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 10000);    		// We introduce a delay before attempting to reconnect,
+		}                                           		// to avoid a hot loop, and to allow our node script to
+	});                                         			// process asynchronous requests in the meantime.
+                                                    		// If you're also serving http, display a 503 error.
+    connection.on('error', function onError(err) {
+        console.log('db error', err);
+	    if (err.code == 'PROTOCOL_CONNECTION_LOST') {   	// Connection to the MySQL server is usually
+	        handleDisconnect();                         	// lost due to either server restart, or a
+	    } else {                                        	// connnection idle timeout (the wait_timeout
+	        throw err;                                  	// server variable configures this)
+        }
+    });
+}
+
+handleDisconnect();
+/* *********************** Configure mysql dbms  ***********************  */
+/* *********************************************************************  */
 
 app.use(session({
 	secret: "wabbadubbadubdub!!",
