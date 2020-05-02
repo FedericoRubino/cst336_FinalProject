@@ -288,36 +288,18 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 
 /* update an existing post */
 app.put("post/:pstId/update", isAuthenticated, function(res,req){
-	console.log("hello")
-	var filename = req.file.path.split("/").pop();
-	var content = fs.readFileSync(req.file.path);
-	var data = new Buffer(content);
-	console.log(data);
-	var statement = "insert into story_table (storyId, title, content, picture, userId, category, likes) Values(?,?,?,?,?,?,?);";
-	
-	// console.log(req.session.user);
-	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
-	
-	var userId = null;
-	connection.query(stmt,function(error, found) {
-	    if(error) throw error;
-	    if(found.length){
-	    	userId = found[0].userId;
-	    }
-	});
-	
-	connection.query('SELECT COUNT(*) FROM story_table;', function(error, found){
-	    if(error) throw error;
-	    if(found.length){
-
-			var storyId = found[0]['COUNT(*)'] + 1;
-			console.log(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0]);
-			connection.query(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
-			    if (error) throw error;
-			    res.redirect('/');
-			});
-	    }
-	});
+	var statement = "UPDATE user_table SET " +
+    				"firstName = '" + req.body.Firstname + "'," +
+    				"lastName  = '" + req.body.Lastname + "'," +
+    				"sex = '" + req.body.sex + "'," +
+    				"profilePic = '" + req.body.profilePic + "'," +
+    				"description = '" + req.body.description + "' " +
+    				"WHERE userID = " + req.params.usrID + ";";
+    // console.log(statement);
+    connection.query(statement,function(error, found) {
+        if(error) throw error;
+	    res.redirect("/");
+    })
 });
 
 /* delete a post - needs some protection */
