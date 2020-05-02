@@ -1,12 +1,6 @@
-user: ToRuWa
 
 
-GRANT ALL PRIVILEGES ON database_name.* TO 'database_user'@'localhost';
-
-GRANT ALL PRIVILEGES ON *.* TO 'ToRuWa'@'localhost';
-
-
-instructions for deploying to heroku:
+INSTRUCTIONS FOR DEPLOYING TO HEROKU:
 
 create project: 
     I used name cst-336-final-project-toruwa
@@ -31,8 +25,8 @@ get DB info:
     click on DB name ie. heroku_garblegarblegarble ( takes a while to load )
     click on system info tab.
     
-    Username:	b8eefb71bce5ff
-    Password:	4741fc7b (Reset)
+    Username:	b8eefb71bce5ff ( will be different for you )
+    Password:	4741fc7b (Reset) ( will be different for you )
     
 get DB Host from heroku config variable:
     go to setting in heroku app
@@ -50,6 +44,8 @@ run our sql script with these credentials to populate our remote DB from cloud 9
     
     I used this to run the script:
         mysql -u b8eefb71bce5ff -p -h 'us-cdbr-east-06.cleardb.net' -D heroku_7b4f59de6b2d0b9 -P 3306 < ./sql/project_instagram-db.sql
+        the format is:
+        mysql -u username -p -h 'host' -D database_name -P 3306 < ./sql/project_instagram-db.sql
 
     you can check your work by loging in and poking around..
     
@@ -78,6 +74,16 @@ VERY IMPORTANT:
     And then untrack it:
         git rm -r --cached node_modules/
         
+        
+Add environment variable to Heroku:
+    under settings tab:
+        add environment variable:
+            ENVIRONMENT = PRODUCTION_YOURNAME
+            
+            ( allows our app to use different database credentials depending on whether it is
+            running on cloud 9 or heroku. VERY good for rapid testing on production platform. )
+            
+            
 Ready to deploy to heroku:
 
     git add .
