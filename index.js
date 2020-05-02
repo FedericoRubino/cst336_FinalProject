@@ -193,6 +193,7 @@ app.post("/user/register", function(req, res) {
 
 /* logout rout */
 app.get('/logout', isAuthenticated, function(req, res) {
+	console.log("/logout")
     req.session.destroy();
     res.redirect('/');
 });
@@ -201,6 +202,8 @@ app.get('/logout', isAuthenticated, function(req, res) {
 
 /* delete a user - needs some protection */
 app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
+	console.log("/user/:"+req.params.userId+"/delete")
+	
     var statement = "DELETE FROM user_table where userId=" + req.params.userId + ";";
     connection.query(statement, function(error, found) {
         if(error) throw error;
