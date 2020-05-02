@@ -42,7 +42,7 @@ CREATE TABLE `story_table` (
   `storyId` mediumint(9) NOT NULL,
   `title` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `content` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `picture` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `picture` mediumblob,
   `userId` smallint(6) NULL,
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `likes` int(11) DEFAULT NULL

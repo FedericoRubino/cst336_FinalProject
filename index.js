@@ -95,13 +95,14 @@ app.get("/", function(req, res){
     connection.query(statementStory, function(error,found){
         if(error) throw error;
         if(found.length){
-        	// console.log(found);
+        	console.log(found);
     		stories = found;
-    		console.log(stories);
     		stories.forEach(function(story){
 	    		var data = new Buffer(story.picture, 'binary');
+	    		// console.log(data);
 				story.picture = data.toString('base64');
-				console.log(story.picture);
+				
+				// console.log(story.picture);
     		});
         }
 	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
@@ -120,7 +121,7 @@ app.get("/user/:userId", isAuthenticated, function(req, res){
 		if(found.length){
 			user = found[0]; // this gets us all of the data from the database of the given author
 		}
-		console.log(user);
+		// console.log(user);
 		res.render('profile_page', {user:user});
     });
 });
@@ -150,7 +151,7 @@ app.get("/login_user",function(req, res) {
 /* login a user */
 app.post("/user/login", async function(req, res){
 	let users = await checkUsername(req.body.username);
-	console.log(users);
+	// console.log(users);
 	let hashedPassword = users.length > 0 ? users[0].password : "";
 	let passwordMatch = await checkPassword(req.body.password, hashedPassword);
 	if(passwordMatch){
@@ -208,7 +209,7 @@ app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
 
 /* updates the user information */
 app.put("/update/:usrID", isAuthenticated, function(req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     
     var statement = "UPDATE user_table SET " +
     				"firstName = '" + req.body.Firstname + "'," +
@@ -217,7 +218,7 @@ app.put("/update/:usrID", isAuthenticated, function(req, res) {
     				"profilePic = '" + req.body.profilePic + "'," +
     				"description = '" + req.body.description + "' " +
     				"WHERE userID = " + req.params.usrID + ";";
-    console.log(statement);
+    // console.log(statement);
     connection.query(statement,function(error, found) {
         if(error) throw error;
 	    res.redirect("/user/" + req.params.usrID);
@@ -252,10 +253,11 @@ app.get("/new_post", isAuthenticated, function(req, res){
 
 /* create a new post - add post into database */
 app.post("/post/new", upload.single('picture'), function(req, res){
-	console.log("file uploaded locally at: ", req.file.path);
+	// console.log("file uploaded locally at: ", req.file.path);
 	var filename = req.file.path.split("/").pop();
 	var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
+	console.log(data);
 	var statement = "insert into story_table (storyId, title, content, picture, userId, category, likes) Values(?,?,?,?,?,?,?);";
 	
 	// console.log(req.session.user);
@@ -272,7 +274,7 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	connection.query('SELECT COUNT(*) FROM story_table;', function(error, found){
 	    if(error) throw error;
 	    if(found.length){
-			// console.log(found);
+
 			var storyId = found[0]['COUNT(*)'] + 1;
 			console.log(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0]);
 			connection.query(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
