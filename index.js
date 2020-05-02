@@ -86,6 +86,10 @@ else{
 }
 
 // I found this code on the internet
+// When connecting to a DB from Heroku, there is this weird problem where
+// the connection keeps closing for like, no reason.
+// This code will handle the error that occurs from loosing the connection,
+// and will simply reconect.
 var connection;
 function handleDisconnect() {
     connection = mysql.createConnection(DBCredentials);  	// Recreate the connection, since the old one cannot be reused.
