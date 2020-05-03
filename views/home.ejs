@@ -78,6 +78,7 @@
 		<% } else { %>
 			<% stories.forEach(function(story){ %>
 				<%- include('templates/story.ejs', { "story" : story } ) -%>
+				<a href="/post/<%=story.storyId%>/update">Edit</a>
 			<% }); %>
 		<% } %>
 	</div> 

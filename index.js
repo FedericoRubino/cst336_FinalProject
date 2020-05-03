@@ -378,20 +378,61 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 });
 
 /* update an existing post */
-app.put("post/:pstId/update", isAuthenticated, function(res,req){
-	var statement = "UPDATE user_table SET " +
-    				"firstName = '" + req.body.Firstname + "'," +
-    				"lastName  = '" + req.body.Lastname + "'," +
-    				"sex = '" + req.body.sex + "'," +
-    				"profilePic = '" + req.body.profilePic + "'," +
-    				"description = '" + req.body.description + "' " +
-    				"WHERE userID = " + req.params.usrID + ";";
-    // console.log(statement);
+app.get("/post/:pstId/update", isAuthenticated, function(req,res){
+	// console.log(req.params.pstId);
+	var postId = req.params.pstId;
+    var statement = "select * from story_table "+
+    				"where storyId=" + postId + ";" ; 
+	console.log(statement);
+    connection.query(statement,function(error,found){
+    	var user = null;
+    	if(error) throw error;
+		if(found.length){
+			user = found[0]; // this gets us all of the data from the database of the given author
+		}
+		res.render('post_update', {user:user, storyId:postId});
+    });
+});
+
+/* updates the story information */
+app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), function(req, res) {
+    // console.log(req.body);
+    var filename = req.file.path.split("/").pop();
+	var content = fs.readFileSync(req.file.path);
+	var data = new Buffer(content);
+	
+
+    var statement = "UPDATE story_table SET " +
+    				"title = '" + req.body.title + "', " +
+    				"content  = '" + req.body.content + "'," +
+    				"category = '" + req.body.category + "' " +
+    				"picture = " + data + " ," +
+    				"WHERE storyId = " + req.params.pstID + ";";
+    				
     connection.query(statement,function(error, found) {
         if(error) throw error;
 	    res.redirect("/");
     })
-});
+    
+   
+})
+
+// app.put("/update/:usrID", isAuthenticated, function(req, res) {
+//     // console.log(req.body);
+    
+//     var statement = "UPDATE user_table SET " +
+//     				"firstName = '" + req.body.Firstname + "'," +
+//     				"lastName  = '" + req.body.Lastname + "'," +
+//     				"sex = '" + req.body.sex + "'," +
+//     				"profilePic = '" + req.body.profilePic + "'," +
+//     				"description = '" + req.body.description + "' " +
+//     				"WHERE userID = " + req.params.usrID + ";";
+//     // console.log(statement);
+//     connection.query(statement,function(error, found) {
+//         if(error) throw error;
+// 	    res.redirect("/user/" + req.params.usrID);
+//     })
+// })
 
 /* delete a post - needs some protection */
 app.get("post/:pstId/delete", isAuthenticated, function(req, res) {
