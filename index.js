@@ -232,6 +232,9 @@ app.get("/login_user",function(req, res) {
 
 /* login a user */
 app.post("/user/login", async function(req, res){
+	console.log("/user/login");
+	console.log("username: " + req.body.username);
+	console.log("password: " + req.body.password);
 	let users = await checkUsername(req.body.username);
 	// console.log(users);
 	let hashedPassword = users.length > 0 ? users[0].password : "";
