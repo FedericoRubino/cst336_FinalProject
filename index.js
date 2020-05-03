@@ -226,6 +226,7 @@ app.get("/user/:userId/edit", isAuthenticated, function(req, res){
 
 /* sends us to the login page */
 app.get("/login_user",function(req, res) {
+	console.log("/login_user");
    res.render('login'); 
 });
 
@@ -235,15 +236,18 @@ app.post("/user/login", async function(req, res){
 	console.log("/user/login");
 	console.log("username: " + req.body.username);
 	console.log("password: " + req.body.password);
+	
 	let users = await checkUsername(req.body.username);
 	// console.log(users);
 	let hashedPassword = users.length > 0 ? users[0].password : "";
 	let passwordMatch = await checkPassword(req.body.password, hashedPassword);
+	console.log("password match: " + passwordMatch);
 	if(passwordMatch){
 		req.session.authenticated = true;
 		req.session.user = users[0].username;
 		res.redirect('/');	
 	} else {
+		console.log("error loggin in");
 		res.render('login', {error: true});
 	}
 });
