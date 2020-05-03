@@ -13,6 +13,7 @@ var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
 var session = require('express-session');
+var seanTools = require('./util_sean');
 
 
 app.use(express.static('public'));
@@ -187,6 +188,43 @@ app.get("/", function(req, res){
     		});
         }
         
+	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
+    });
+});
+
+app.get("/search", function(req, res){
+	var title = req.query.title;
+	var keyword = req.query.keyword;
+	var catagory = req.query.catagory;
+	
+	var stmt = seanTools.buildStatement(title, keyword, catagory);
+	console.log(stmt);
+	
+	var statement = "select * from user_table;";
+    var statementStory = stmt;
+    var users = null
+    connection.query(statement, function(error,found){
+        if(error) throw error;
+        if(found.length){
+        	// console.log(found);
+    		users = found;
+        }
+    });
+	var stories = null;
+    connection.query(statementStory, function(error,found){
+        if(error) throw error;
+        if(found.length){
+
+    		stories = found;
+    		stories.forEach(function(story){
+	    		var data = new Buffer(story.picture, 'binary');
+	    		// console.log(data);
+				story.picture = data.toString('base64');
+				
+				// console.log(story.picture);
+    		});
+        }
+        console.log(stories.length);
 	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });
 });

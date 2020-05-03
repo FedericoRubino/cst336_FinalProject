@@ -1,7 +1,7 @@
 
 // title, content, category
 var buildStatement = function(title, content_keyword, catagory){
-    var stmt = "SELECT * FROM l9_author natural join l9_quotes";
+    var stmt = "SELECT * FROM story_table";
     var searchTerms = [];
     
     //console.log("Title: " + title);
@@ -52,5 +52,5 @@ var getCatagories = function(){
 */
 
 module.exports = {
-    buildStatement : buildStatement()
+    buildStatement : buildStatement
 }
