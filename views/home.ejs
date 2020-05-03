@@ -47,6 +47,7 @@
         <div class="col-sm-4"></div> 
     </div>
     
+    <!--
     <div class='form-group row'>
 		<div class='col-sm-4'>
 			<%if(!stories){%>
@@ -68,6 +69,15 @@
 
 		</div>
 	</div>
+	-->
+	<p>Hello</p>
+	<div class="storyStream">
+		<% if ( stories ) { %>
+			<% stories.forEach(function(story){ %>
+				<%- include('templates/story.ejs', { "story" : story } ) -%>
+			<% }); %>
+		<% } %>
+	</div> 
     
     
     
