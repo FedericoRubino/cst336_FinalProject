@@ -5,5 +5,24 @@
 }
 
 .storyCard{
-    
+    background-color: #f0f3f7;
+    clear: both;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    overflow:auto; 
+}
+
+.storyImg{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 300px;
+    height: auto;
+    float: left;
+}
+
+.storyBody {
+    padding-top: 20px;
+    height: 100%;
 }
