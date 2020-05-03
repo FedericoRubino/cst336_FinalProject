@@ -224,7 +224,7 @@ app.get("/search", function(req, res){
 				// console.log(story.picture);
     		});
         }
-        console.log(stories.length);
+        console.log(stories);
 	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });
 });
