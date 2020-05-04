@@ -164,7 +164,7 @@ function isAuthenticated(req, res, next){
 /* home: This should contain all of the posts*/
 app.get("/", function(req, res){
     var statement = "select * from user_table;";
-    var statementStory = "select * from story_table;";
+    var statementStory = "select * from story_table natural join stream_table;";
     var users = null
     connection.query(statement, function(error,found){
         if(error) throw error;
@@ -237,14 +237,39 @@ app.get("/search", function(req, res){
 app.get("/user/:userN", isAuthenticated, function(req, res){
     var statement = "select * from user_table "+
     				"where username='" + req.params.userN + "';"; 
+    				
+    var user = null;
+    var stories = null;
     connection.query(statement,function(error,found){
-    	var user = null;
     	if(error) throw error;
 		if(found.length){
-			user = found[0]; // this gets us all of the data from the database of the given author
+			user = found[0];
+			var data = new Buffer(user.profilePic, 'binary');
+			user.profilePic = data.toString('base64');
+			// this gets us all of the data from the database of the given author
 		}
+		
+		
+
+    });
+    var statementStories = "select * from story_table natural join user_table " +
+    						"where username='" + req.params.userN + "';"; 
+    						
+    connection.query(statementStories,function(error,found){
+    	if(error) throw error;
+		if(found.length){
+			stories = found;
+			stories.forEach(function(story) {
+				var data = new Buffer(story.picture, 'binary');
+				story.picture = data.toString('base64');
+			});
+			
+			// this gets us all of the data from the database of the given author
+		}
+		
+		
 		// console.log(user);
-		res.render('profile_page', {user:user});
+		res.render('profile_page', {user:user, stories:stories});
     });
 });
 
@@ -300,13 +325,18 @@ app.get("/new_user",function(req, res) {
    res.render('new_user'); 
 });
 
-app.post("/user/register", function(req, res) {
+app.post("/user/register", upload.single('profilePic'), function(req, res) {
+	
+	// var filename = req.file.path.split("/").pop();
+	var content = fs.readFileSync(req.file.path);
+	var data = new Buffer(content);
+	
     let username = req.body.username;
     let password = req.body.password;
 	let firstname = req.body.Firstname;
 	let lastname = req.body.Lastname;
 	let sex = req.body.sex;
-	let profilePic = req.body.profilePic;
+	let profilePic = data;
 	let description = req.body.description;
     let salt = 10;
     bcrypt.hash(password, salt,function(error,hash){
@@ -344,41 +374,46 @@ app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
 });
 
 /* updates the user information */
-app.put("/update/:usrID", isAuthenticated, function(req, res) {
+app.put("/update/:usrID", isAuthenticated, upload.single('profilePic'), function(req, res) {
     // console.log(req.body);
     
+    var content = fs.readFileSync(req.file.path);
+	var data = new Buffer(content);
+    				
     var statement = "UPDATE user_table SET " +
-    				"firstName = '" + req.body.Firstname + "'," +
-    				"lastName  = '" + req.body.Lastname + "'," +
-    				"sex = '" + req.body.sex + "'," +
-    				"profilePic = '" + req.body.profilePic + "'," +
-    				"description = '" + req.body.description + "' " +
-    				"WHERE userID = " + req.params.usrID + ";";
+    				"firstName = ?," +
+    				"lastName  = ?," +
+    				"sex = ?," +
+    				"profilePic = ?," +
+    				"description = ? " +
+    				"WHERE userID = ?;";
+    				
     // console.log(statement);
-    connection.query(statement,function(error, found) {
+    connection.query(statement, [req.body.Firstname, req.body.Lastname, req.body.sex, data, req.body.description, req.params.usrID],function(error, found) {
         if(error) throw error;
-	    res.redirect("/user/" + req.params.usrID);
-    })
-})
-
-/* the user profile page */
-app.get("/user_profile", isAuthenticated, function(req, res){
-    var name = req.query.name;
-    var fname = name.split(" ").splice(0,1);
-    var lname = name.split(" ").splice(1,2);
-    var statement = "select * from user_table "+
-    				"where firstName = '" + fname + "'" +
-    				"and lastName='"+ lname + "';" ; 
-    connection.query(statement,function(error,found){
-    	var user = null;
-    	if(error) throw error;
-		if(found.length){
-			user = found[0]; // this gets us all of the data from the database of the given author
-		}
-		// console.log(user);
-		res.render('profile_page', {keyword:name, user:user});
+	    res.redirect("/user/" + req.session.user);
     });
 });
+
+
+/* the user profile page */
+// app.get("/user_profile", isAuthenticated, function(req, res){
+//     var name = req.query.name;
+//     var fname = name.split(" ").splice(0,1);
+//     var lname = name.split(" ").splice(1,2);
+//     var statement = "select * from user_table "+
+//     				"where firstName = '" + fname + "'" +
+//     				"and lastName='"+ lname + "';" ; 
+//     connection.query(statement,function(error,found){
+//     	var user = null;
+//     	if(error) throw error;
+// 		if(found.length){
+// 			user = found[0]; // this gets us all of the data from the database of the given author
+// 		}
+// 		// console.log(user);
+// 		res.render('profile_page', {keyword:name, user:user});
+//     });
+// });
 
 
 /* route to making a new post */
@@ -395,7 +430,7 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	var data = new Buffer(content);
 	console.log(data);
 	var statement = "insert into story_table (title, content, picture, userId, category, likes) Values(?,?,?,?,?,?);";
-	
+	var statementStream = "insert into stream_table (userId, storyId) Values(?,?);";
 	// console.log(req.session.user);
 	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
 	
@@ -411,11 +446,15 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	    if(error) throw error;
 	    if(found.length){
 
-			var storyId = found[0]['COUNT(*)'] + 1;
+			var storyId = found[0]['COUNT(*)'] + 33;
 			console.log(statement, [req.body.title,req.body.content,data,userId,req.body.category,0]);
 			connection.query(statement, [req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
 			    if (error) throw error;
-			    res.redirect('/');
+			    connection.query(statementStream, [userId, storyId], function(error, found) {
+			    	if(error) throw error;
+			    	res.redirect('/');
+			    });
+			    
 			});
 	    }
 	});
@@ -444,20 +483,20 @@ app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), funct
     var filename = req.file.path.split("/").pop();
 	var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
-	
-
+    
+    
     var statement = "UPDATE story_table SET " +
-    				"title = '" + req.body.title + "', " +
-    				"content  = '" + req.body.content + "'," +
-    				"category = '" + req.body.category + "' " +
-    				"picture = " + data + " ," +
-    				"WHERE storyId = " + req.params.pstID + ";";
+    				"title = ?," +
+    				"content  = ?," +
+    				"category = ?," +
+    				"picture = ? " +
+    				"WHERE storyId = ?;";
     				
-    connection.query(statement,function(error, found) {
+    // console.log(statement);
+    connection.query(statement, [req.body.title, req.body.content, req.body.category, data, req.params.pstID],function(error, found) {
         if(error) throw error;
 	    res.redirect("/");
-    })
-    
+    });
    
 })
 

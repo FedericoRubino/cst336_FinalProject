@@ -14,25 +14,6 @@
 <div class="container">
     <div class ="jumbotron">
 
-			<div class='form-group row'>
-				<div class='col-sm-4'>
-					<%if(!users){%>
-					
-					<%} else {%>
-						<table>
-							<tr><th>User</th><th>Action</th></tr>
-							<tr><td colspan="2"><hr/></td></td></tr>
-							<%users.forEach(function(user){%>
-								<tr>
-									<td><%=user.firstName%> <%=user.lastName%></td>
-									<td>| <a href="/user/<%=user.userId%>/edit">Edit</a> | <button onclick="confirmF(<%=user.userId%>)">Delete</button> </td>
-								</tr>
-							<%});%>
-						</table>
-					<%}%>
-
-				</div>
-			</div>
 
 		<div class="col-sm-4"> </div>
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
@@ -68,9 +49,9 @@
 		<% if ( !stories ) { %>
 			<p>stories not found</p>
 		<% } else { %>
-			<% stories.forEach(function(story){ %>
-				<%- include('templates/story.ejs', { "story" : story } ) -%>
-			<% }); %>
+			<% for(var i = stories.length-1; i >= 0; i--){ %>
+				<%- include('templates/story.ejs', { "story" : stories[i] } ) -%>
+			<% } %>
 		<% } %>
 	</div> 
     
