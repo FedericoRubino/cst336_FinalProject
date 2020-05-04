@@ -225,7 +225,8 @@ app.get("/search", function(req, res){
     		});
         }
         console.log(stories);
-	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
+        res.json(stories);
+	    //res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });
 });
 
