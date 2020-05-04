@@ -160,7 +160,6 @@ function isAuthenticated(req, res, next){
 	if(!req.session.authenticated) res.redirect('/login_user');
 	else next();
 }
-/* Middleware functions */
 
 
 /* home: This should contain all of the posts*/
@@ -171,7 +170,6 @@ app.get("/", function(req, res){
     connection.query(statement, function(error,found){
         if(error) throw error;
         if(found.length){
-        	// console.log(found);
     		users = found;
         }
     });
@@ -190,22 +188,18 @@ app.get("/", function(req, res){
 });
 
 
-
+// search bar functionality
 app.get("/search", function(req, res){
 	var title = req.query.title;
 	var keyword = req.query.keyword;
 	var catagory = req.query.catagory;
-	
 	var stmt = seanTools.buildStatement(title, keyword, catagory);
-	console.log(stmt);
-	
 	var statement = "select * from user_table;";
     var statementStory = stmt;
     var users = null
     connection.query(statement, function(error,found){
         if(error) throw error;
         if(found.length){
-        	// console.log(found);
     		users = found;
         }
     });
@@ -213,23 +207,16 @@ app.get("/search", function(req, res){
     connection.query(statementStory, function(error,found){
         if(error) throw error;
         if(found.length){
-
     		stories = found;
     		stories.forEach(function(story){
 	    		var data = new Buffer(story.picture, 'binary');
-	    		// console.log(data);
 				story.picture = data.toString('base64');
-				
-				// console.log(story.picture);
     		});
         }
-        console.log(stories);
         res.json(stories);
 	    //res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });
 });
-
-
 
 
 /* display user page  */
@@ -247,9 +234,6 @@ app.get("/user/:userN", isAuthenticated, function(req, res){
 			user.profilePic = data.toString('base64');
 			// this gets us all of the data from the database of the given author
 		}
-		
-		
-
     });
     var statementStories = "select * from story_table natural join user_table " +
     						"where username='" + req.params.userN + "';"; 
@@ -262,13 +246,8 @@ app.get("/user/:userN", isAuthenticated, function(req, res){
 				var data = new Buffer(story.picture, 'binary');
 				story.picture = data.toString('base64');
 			});
-			
-			// this gets us all of the data from the database of the given author
 		}
-		
-		
-		// console.log(user);
-		res.render('profile_page', {user:user, stories:stories});
+		res.render('profile_page', {user:user, stories:stories, currentUser:req.session.user});
     });
 });
 
@@ -286,26 +265,20 @@ app.get("/user/:userId/edit", isAuthenticated, function(req, res){
 		if(found.length){
 			user = found[0]; // this gets us all of the data from the database of the given author
 		}
-		res.render('user_update', {user:user});
+		res.render('user_update', {user:user, currentUser:req.session.user});
     });
 });
 
 
 /* sends us to the login page */
 app.get("/login_user",function(req, res) {
-	console.log("/login_user");
    res.render('login'); 
 });
 
 
 /* login a user */
 app.post("/user/login", async function(req, res){
-	console.log("/user/login");
-	console.log("username: " + req.body.username);
-	console.log("password: " + req.body.password);
-	
 	let users = await checkUsername(req.body.username);
-	// console.log(users);
 	let hashedPassword = users.length > 0 ? users[0].password : "";
 	let passwordMatch = await checkPassword(req.body.password, hashedPassword);
 	console.log("password match: " + passwordMatch);
@@ -321,7 +294,7 @@ app.post("/user/login", async function(req, res){
 
 /* sends us to the create new user page */
 app.get("/new_user",function(req, res) {
-   res.render('new_user'); 
+   res.render('new_user', {currentUser:req.session.user}); 
 });
 
 app.post("/user/register", upload.single('profilePic'), function(req, res) {
@@ -353,17 +326,13 @@ app.post("/user/register", upload.single('profilePic'), function(req, res) {
 
 /* logout rout */
 app.get('/logout', isAuthenticated, function(req, res) {
-	console.log("/logout")
     req.session.destroy();
     res.redirect('/');
 });
 
 
-
 /* delete a user - needs some protection */
 app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
-	console.log("/user/:"+req.params.userId+"/delete")
-	
     var statement = "DELETE FROM user_table where userId=" + req.params.userId + ";";
     connection.query(statement, function(error, found) {
         if(error) throw error;
@@ -372,13 +341,11 @@ app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
     });
 });
 
+
 /* updates the user information */
 app.put("/update/:usrID", isAuthenticated, upload.single('profilePic'), function(req, res) {
-    // console.log(req.body);
-    
     var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
-    				
     var statement = "UPDATE user_table SET " +
     				"firstName = ?," +
     				"lastName  = ?," +
@@ -386,8 +353,6 @@ app.put("/update/:usrID", isAuthenticated, upload.single('profilePic'), function
     				"profilePic = ?," +
     				"description = ? " +
     				"WHERE userID = ?;";
-    				
-    // console.log(statement);
     connection.query(statement, [req.body.Firstname, req.body.Lastname, req.body.sex, data, req.body.description, req.params.usrID],function(error, found) {
         if(error) throw error;
 	    res.redirect("/user/" + req.session.user);
@@ -397,22 +362,18 @@ app.put("/update/:usrID", isAuthenticated, upload.single('profilePic'), function
 
 /* route to making a new post */
 app.get("/new_post", isAuthenticated, function(req, res){
-	res.render('new_post');
+	res.render('new_post', {currentUser:req.session.user});
 });
 
 
 /* create a new post - add post into database */
 app.post("/post/new", upload.single('picture'), function(req, res){
-	// console.log("file uploaded locally at: ", req.file.path);
 	var filename = req.file.path.split("/").pop();
 	var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
-	console.log(data);
 	var statement = "insert into story_table (title, content, picture, userId, category, likes) Values(?,?,?,?,?,?);";
 	var statementStream = "insert into stream_table (userId, storyId) Values(?,?);";
-	// console.log(req.session.user);
 	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
-	
 	var userId = null;
 	connection.query(stmt,function(error, found) {
 	    if(error) throw error;
@@ -424,9 +385,7 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	connection.query('SELECT COUNT(*) FROM story_table;', function(error, found){
 	    if(error) throw error;
 	    if(found.length){
-
 			var storyId = found[0]['COUNT(*)'] + 33;
-			console.log(statement, [req.body.title,req.body.content,data,userId,req.body.category,0]);
 			connection.query(statement, [req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
 			    if (error) throw error;
 			    connection.query(statementStream, [userId, storyId], function(error, found) {
@@ -439,31 +398,28 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	});
 });
 
+
 /* update an existing post */
 app.get("/post/:pstId/update", isAuthenticated, function(req,res){
-	// console.log(req.params.pstId);
 	var postId = req.params.pstId;
     var statement = "select * from story_table "+
     				"where storyId=" + postId + ";" ; 
-	console.log(statement);
     connection.query(statement,function(error,found){
     	var story = null;
     	if(error) throw error;
 		if(found.length){
 			story = found[0]; // this gets us all of the data from the database of the given author
 		}
-		res.render('post_update', {story:story, storyId:postId});
+		res.render('post_update', {story:story, storyId:postId, currentUser:req.session.user});
     });
 });
 
+
 /* updates the story information */
 app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), function(req, res) {
-    // console.log(req.body);
     var filename = req.file.path.split("/").pop();
 	var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
-    
-    
     var statement = "UPDATE story_table SET " +
     				"title = ?," +
     				"content  = ?," +
@@ -471,21 +427,17 @@ app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), funct
     				"picture = ? " +
     				"WHERE storyId = ?;";
     				
-    // console.log(statement);
     connection.query(statement, [req.body.title, req.body.content, req.body.category, data, req.params.pstID],function(error, found) {
         if(error) throw error;
 	    res.redirect("/");
     });
-   
 })
+
 
 /* delete a post - needs some protection */
 app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
-    console.log("/post/:"+req.params.pstId+"/delete")
 	var userName = req.session.user;
-	
 	var statementForUserID = "SELECT username from user_table natural join story_table where username='" + userName + "' and storyId=" +req.params.pstId+";";
-	
 	connection.query(statementForUserID, function(error, found) {
 		if(error) throw error;
 		if(found.length){
@@ -495,16 +447,17 @@ app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
 		        res.redirect("/");
 	    	});
 		} else {
-			console.log("are we here?");
 			res.redirect("/");			
 		}
 	});
 });
 
+
 /* error page (route not found) */
 app.get("/*", function(req, res){
-	res.render("error");
+	res.render("error", {currentUser:req.session.user});
 });
+
 
 app.listen(process.env.PORT || 3000, function(){
 	console.log("Server is running...");
