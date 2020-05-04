@@ -473,6 +473,7 @@ app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), funct
 //     })
 // })
 
+// bla bla
 /* delete a post - needs some protection */
 app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
     console.log("/post/:"+req.params.pstId+"/delete")
