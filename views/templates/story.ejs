@@ -21,6 +21,17 @@
     </div>
     <div class="storyFooter">
         <hr>
-        <a href="/post/<%=story.storyId%>/update">Edit</a>
+        <button href="/post/<%=story.storyId%>/update">Edit</button>
+        <button onClick="confirmF(<%=story.storyId%>)">Delete</button>
     </div>
+    
+    <script>
+
+	function confirmF(id){
+		if(confirm("Do you really want to delete this post?")){
+			location.href = "/post/"+id+"/delete";
+		}
+	}
+	
+    </script>
 </div>

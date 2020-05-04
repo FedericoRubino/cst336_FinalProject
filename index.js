@@ -474,8 +474,25 @@ app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), funct
 // })
 
 /* delete a post - needs some protection */
-app.get("post/:pstId/delete", isAuthenticated, function(req, res) {
-    
+app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
+    console.log("/post/:"+req.params.pstId+"/delete")
+	var userName = req.session.user;
+	
+	var statementForUserID = "SELECT username from user_table natural join story_table where username='" + userName + "' and storyId=" +req.params.pstId+";";
+	
+	connection.query(statementForUserID, function(error, found) {
+		if(error) throw error;
+		if(found.length){
+			var statement = "DELETE FROM story_table where storyId=" + req.params.pstId + ";";
+	    	connection.query(statement, function(error, found) {
+		        if(error) throw error;
+		        res.redirect("/");
+	    	});
+		} else {
+			console.log("are we here?");
+			res.redirect("/");			
+		}
+	});
 });
 
 
