@@ -164,7 +164,7 @@ function isAuthenticated(req, res, next){
 /* home: This should contain all of the posts*/
 app.get("/", function(req, res){
     var statement = "select * from user_table;";
-    var statementStory = "select * from story_table natural join stream_table;";
+    var statementStory = "select * from story_table;";
     var users = null
     connection.query(statement, function(error,found){
         if(error) throw error;
@@ -177,20 +177,17 @@ app.get("/", function(req, res){
     connection.query(statementStory, function(error,found){
         if(error) throw error;
         if(found.length){
-
     		stories = found;
     		stories.forEach(function(story){
 	    		var data = new Buffer(story.picture, 'binary');
-	    		// console.log(data);
 				story.picture = data.toString('base64');
-				
-				// console.log(story.picture);
     		});
         }
-        
 	    res.render('home', { users:users, stories:stories, currentUser:req.session.user});
     });
 });
+
+
 
 app.get("/search", function(req, res){
 	var title = req.query.title;
