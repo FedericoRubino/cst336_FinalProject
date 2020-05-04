@@ -25,27 +25,32 @@ function displayResult(result){
         console.log(story.userId); 
     });
 }
-$('#searchButton').on('click', function(){
-    console.log("onclick");
-    var title = $('#title').val();
-    var keyword = $('#keyword').val();
-    var catagory = $('#catagory').val();
+window.addEventListener('load', function () {
+    console.log("page fully loaded");
+    $('#searchButton').on('click', function(){
+        console.log("onclick");
+        var title = $('#title').val();
+        var keyword = $('#keyword').val();
+        var catagory = $('#catagory').val();
+        
+        $.ajax({
+            method: "GET",
+            url: "/search",
+            dataType: "json",
+            data : { 
+                title : title, 
+                keyword : keyword,
+                catagory : catagory
+            },
+            success: function(result, status){
+                displayResult(result);
+            },
+            error: function(status, error){
+                console.log("error");
+            }
+        });
     
-    $.ajax({
-        method: "GET",
-        url: "/search",
-        dataType: "json",
-        data : { 
-            title : title, 
-            keyword : keyword,
-            catagory : catagory
-        },
-        success: function(result, status){
-            displayResult(result);
-        },
-        error: function(status, error){
-            console.log("error");
-        }
     });
-    
 });
+
+

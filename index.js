@@ -17,7 +17,7 @@ var seanTools = require('./util_sean');
 
 
 app.use(express.static('public'));
-
+//app.use(express.static("css"));
 //app.use(express.static(__dirname + 'public'));
 
 app.set('view engine', 'ejs');
@@ -25,7 +25,6 @@ app.set('view engine', 'ejs');
 // override with POST having ?_method=DELETE
 app.use(methodOverride('_method'));
 
-//app.use(express.static("css"));
 app.use(bodyParser.urlencoded({extended:true}));
 
 
