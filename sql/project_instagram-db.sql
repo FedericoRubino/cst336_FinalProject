@@ -15,7 +15,7 @@ CREATE TABLE `user_table` (
   `firstName` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `lastName` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `sex` char(1) COLLATE utf8_unicode_ci NOT NULL,
-  `profilePic` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `profilePic` mediumblob,
   `description` varchar(500) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

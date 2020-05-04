@@ -394,7 +394,7 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	var content = fs.readFileSync(req.file.path);
 	var data = new Buffer(content);
 	console.log(data);
-	var statement = "insert into story_table (storyId, title, content, picture, userId, category, likes) Values(?,?,?,?,?,?,?);";
+	var statement = "insert into story_table (title, content, picture, userId, category, likes) Values(?,?,?,?,?,?);";
 	
 	// console.log(req.session.user);
 	var stmt = 'SELECT * from user_table where username = "' + req.session.user + '";';
@@ -412,8 +412,8 @@ app.post("/post/new", upload.single('picture'), function(req, res){
 	    if(found.length){
 
 			var storyId = found[0]['COUNT(*)'] + 1;
-			console.log(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0]);
-			connection.query(statement, [storyId,req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
+			console.log(statement, [req.body.title,req.body.content,data,userId,req.body.category,0]);
+			connection.query(statement, [req.body.title,req.body.content,data,userId,req.body.category,0], function(error, found) {
 			    if (error) throw error;
 			    res.redirect('/');
 			});
@@ -429,12 +429,12 @@ app.get("/post/:pstId/update", isAuthenticated, function(req,res){
     				"where storyId=" + postId + ";" ; 
 	console.log(statement);
     connection.query(statement,function(error,found){
-    	var user = null;
+    	var story = null;
     	if(error) throw error;
 		if(found.length){
-			user = found[0]; // this gets us all of the data from the database of the given author
+			story = found[0]; // this gets us all of the data from the database of the given author
 		}
-		res.render('post_update', {user:user, storyId:postId});
+		res.render('post_update', {story:story, storyId:postId});
     });
 });
 
