@@ -13,24 +13,19 @@
 
 <div class="container">
     <div class ="jumbotron">
-        <h1> Home </h1>
-        <br>
+
 			<div class='form-group row'>
 				<div class='col-sm-4'>
 					<%if(!users){%>
 					
 					<%} else {%>
-						
-						<h3>Logged in user: <%=currentUser%></h3>
-						<br>
-						
 						<table>
 							<tr><th>User</th><th>Action</th></tr>
 							<tr><td colspan="2"><hr/></td></td></tr>
 							<%users.forEach(function(user){%>
 								<tr>
 									<td><%=user.firstName%> <%=user.lastName%></td>
-									<td><a href="/user/<%=user.userId%>">Info</a> | <a href="/user/<%=user.userId%>/edit">Edit</a> | <button onclick="confirmF(<%=user.userId%>)">Delete</button> </td>
+									<td>| <a href="/user/<%=user.userId%>/edit">Edit</a> | <button onclick="confirmF(<%=user.userId%>)">Delete</button> </td>
 								</tr>
 							<%});%>
 						</table>
@@ -41,9 +36,6 @@
 
 		<div class="col-sm-4"> </div>
         	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_post';" > New Post </button> 
-        	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/new_user';" > New User </button> 
-        	<button class="col-sm-4 btn btn-info btn-block" onclick="location.href='/login_user';" > Login </button> 
-        	
         <div class="col-sm-4"></div> 
     </div>
     

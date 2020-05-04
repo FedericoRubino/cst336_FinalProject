@@ -231,11 +231,12 @@ app.get("/search", function(req, res){
 });
 
 
+
+
 /* display user page  */
-app.get("/user/:userId", isAuthenticated, function(req, res){
-	var userId = req.params.userId;
+app.get("/user/:userN", isAuthenticated, function(req, res){
     var statement = "select * from user_table "+
-    				"where userId=" + userId + ";" ; 
+    				"where username='" + req.params.userN + "';"; 
     connection.query(statement,function(error,found){
     	var user = null;
     	if(error) throw error;
@@ -246,6 +247,9 @@ app.get("/user/:userId", isAuthenticated, function(req, res){
 		res.render('profile_page', {user:user});
     });
 });
+
+
+
 
 /* sends us to the edit page for user */
 app.get("/user/:userId/edit", isAuthenticated, function(req, res){
@@ -334,6 +338,7 @@ app.get("/user/:userId/delete", isAuthenticated, function(req, res) {
     var statement = "DELETE FROM user_table where userId=" + req.params.userId + ";";
     connection.query(statement, function(error, found) {
         if(error) throw error;
+        req.session.destroy();
         res.redirect("/");
     });
 });

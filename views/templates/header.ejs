@@ -17,19 +17,32 @@
         
     <main class="content">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Home</a>
+  <a class="navbar-brand" href="/">Fake-A-Gram</a>
   
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/login_user">Login</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
-      </li>
+
+      <% if (typeof currentUser != 'undefined' && currentUser != null){%>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/<%=currentUser%>"><%=currentUser%></a>
+          </li>
+      <%}else{ %>
+      
+        <li class="nav-item">
+          <a class="nav-link" href="/login_user">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/new_user">Register</a>
+        </li>
+      
+      
+      <%}%>
+
       <li class="nav-item dropdown">
-        
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="#">Action</a>
           <a class="dropdown-item" href="#">Another action</a>
