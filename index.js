@@ -16,7 +16,9 @@ var session = require('express-session');
 var seanTools = require('./util_sean');
 
 
-app.use(express.static('public'));
+//app.use(express.static('public'));
+app.use(express.static(__dirname + 'public'));
+
 app.set('view engine', 'ejs');
 
 // override with POST having ?_method=DELETE
@@ -234,7 +236,7 @@ app.get("/search", function(req, res){
 app.get("/user/:userN", isAuthenticated, function(req, res){
     var statement = "select * from user_table "+
     				"where username='" + req.params.userN + "';"; 
-    				
+    			
     var user = null;
     var stories = null;
     connection.query(statement,function(error,found){

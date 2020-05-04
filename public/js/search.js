@@ -1,5 +1,5 @@
 
-
+console.log("Searching...");
 
 function displayResult(result){
     $('#storyStream').empty();
