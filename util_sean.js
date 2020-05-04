@@ -1,6 +1,6 @@
 
 // title, content, category
-var buildStatement = function(title, content_keyword, catagory){
+var buildStatement = function(title, content_keyword, category){
     var stmt = "SELECT * FROM story_table";
     var searchTerms = [];
     
@@ -18,10 +18,10 @@ var buildStatement = function(title, content_keyword, catagory){
         );
     }
     
-    console.log("Catagory : " + catagory);
-    if ( typeof catagory !== 'undefined' && catagory ){
+    console.log("category : " + category);
+    if ( typeof category !== 'undefined' && category ){
         searchTerms.push(
-            " story_table.catagory='" + catagory + "'"  
+            " story_table.category='" + category + "'"  
         );
     }
     
