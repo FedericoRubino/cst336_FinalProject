@@ -1,14 +1,3 @@
-<!--
-<div class="storyCard">
-    <img style="width=25%;" class="card-img-top" src='data:image/png;base64, <%=story.picture%>' alt="Image Not Available">
-    <div class="card-body">
-       
-    </div>
-    <script>
-        
-    </script>
-</div>
--->
 
 <div class="storyCard">
     
@@ -17,7 +6,6 @@
         <h5 class="mt-0"><%=story.title%></h5>
         <p class="mt-0"><%=story.category%></p>
         <%=story.content%>
-        
     </div>
     <div class="storyFooter">
         <hr>
@@ -26,12 +14,10 @@
     </div>
     
     <script>
-
-	function confirmF(id){
-		if(confirm("Do you really want to delete this post?")){
-			location.href = "/post/"+id+"/delete";
-		}
-	}
-	
+    	function confirmF(id){
+    		if(confirm("Do you really want to delete this post?")){
+    			location.href = "/post/"+id+"/delete";
+    		}
+    	}
     </script>
 </div>

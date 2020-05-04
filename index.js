@@ -393,26 +393,6 @@ app.put("/update/:usrID", isAuthenticated, upload.single('profilePic'), function
 });
 
 
-/* the user profile page */
-// app.get("/user_profile", isAuthenticated, function(req, res){
-//     var name = req.query.name;
-//     var fname = name.split(" ").splice(0,1);
-//     var lname = name.split(" ").splice(1,2);
-//     var statement = "select * from user_table "+
-//     				"where firstName = '" + fname + "'" +
-//     				"and lastName='"+ lname + "';" ; 
-//     connection.query(statement,function(error,found){
-//     	var user = null;
-//     	if(error) throw error;
-// 		if(found.length){
-// 			user = found[0]; // this gets us all of the data from the database of the given author
-// 		}
-// 		// console.log(user);
-// 		res.render('profile_page', {keyword:name, user:user});
-//     });
-// });
-
-
 /* route to making a new post */
 app.get("/new_post", isAuthenticated, function(req, res){
 	res.render('new_post');
@@ -497,24 +477,6 @@ app.put("/update/story/:pstID", isAuthenticated, upload.single('picture'), funct
    
 })
 
-// app.put("/update/:usrID", isAuthenticated, function(req, res) {
-//     // console.log(req.body);
-    
-//     var statement = "UPDATE user_table SET " +
-//     				"firstName = '" + req.body.Firstname + "'," +
-//     				"lastName  = '" + req.body.Lastname + "'," +
-//     				"sex = '" + req.body.sex + "'," +
-//     				"profilePic = '" + req.body.profilePic + "'," +
-//     				"description = '" + req.body.description + "' " +
-//     				"WHERE userID = " + req.params.usrID + ";";
-//     // console.log(statement);
-//     connection.query(statement,function(error, found) {
-//         if(error) throw error;
-// 	    res.redirect("/user/" + req.params.usrID);
-//     })
-// })
-
-// bla bla
 /* delete a post - needs some protection */
 app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
     console.log("/post/:"+req.params.pstId+"/delete")
@@ -536,7 +498,6 @@ app.get("/post/:pstId/delete", isAuthenticated, function(req, res) {
 		}
 	});
 });
-
 
 /* error page (route not found) */
 app.get("/*", function(req, res){
